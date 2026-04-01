@@ -4,14 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PredictionForm from "@/components/PredictionForm";
 import { predictDisease } from "@/lib/api";
-import { PatientInput } from "@/types";
+import { SymptomsInput } from "@/types";
 
 export default function PredictPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (data: PatientInput) => {
+  const handleSubmit = async (data: SymptomsInput) => {
     setIsLoading(true);
     setError(null);
 
@@ -36,7 +36,7 @@ export default function PredictPage() {
           Analyse de risque
         </h1>
         <p className="text-slate-600">
-          Renseignez vos données de santé pour obtenir une prédiction
+          Sélectionnez vos symptômes pour obtenir une prédiction
         </p>
       </div>
 

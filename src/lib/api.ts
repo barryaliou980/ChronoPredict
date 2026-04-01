@@ -1,9 +1,9 @@
-import { PatientInput, PredictionResult } from "@/types";
+import { SymptomsInput, PredictionResult } from "@/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export async function predictDisease(
-  data: PatientInput
+  data: SymptomsInput
 ): Promise<PredictionResult> {
   const response = await fetch(`${API_URL}/api/predict`, {
     method: "POST",
@@ -17,6 +17,15 @@ export async function predictDisease(
   }
 
   return response.json();
+}
+
+export async function fetchSymptoms(): Promise<string[]> {
+  const response = await fetch(`${API_URL}/api/symptoms`);
+  if (!response.ok) {
+    throw new Error("Impossible de charger les symptômes");
+  }
+  const data = await response.json();
+  return data.symptoms;
 }
 
 export async function healthCheck(): Promise<boolean> {

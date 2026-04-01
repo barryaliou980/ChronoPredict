@@ -4,9 +4,47 @@ import { PredictionResult } from "@/types";
 import Link from "next/link";
 
 const DISEASE_LABELS: Record<string, string> = {
-  Healthy: "En bonne santé",
-  "Single Condition": "Une condition chronique",
-  "Multiple Conditions": "Conditions multiples",
+  "(vertigo) Paroymsal  Positional Vertigo": "Vertige positionnel",
+  AIDS: "SIDA",
+  Acne: "Acné",
+  "Alcoholic hepatitis": "Hépatite alcoolique",
+  Allergy: "Allergie",
+  Arthritis: "Arthrite",
+  "Bronchial Asthma": "Asthme bronchique",
+  "Cervical spondylosis": "Spondylose cervicale",
+  "Chicken pox": "Varicelle",
+  "Chronic cholestasis": "Cholestase chronique",
+  "Common Cold": "Rhume",
+  Dengue: "Dengue",
+  Diabetes: "Diabète",
+  "Dimorphic hemmorhoids(piles)": "Hémorroïdes",
+  "Drug Reaction": "Réaction médicamenteuse",
+  "Fungal infection": "Infection fongique",
+  GERD: "Reflux gastro-œsophagien",
+  Gastroenteritis: "Gastro-entérite",
+  "Heart attack": "Crise cardiaque",
+  "Hepatitis B": "Hépatite B",
+  "Hepatitis C": "Hépatite C",
+  "Hepatitis D": "Hépatite D",
+  "Hepatitis E": "Hépatite E",
+  Hypertension: "Hypertension",
+  Hyperthyroidism: "Hyperthyroïdie",
+  Hypoglycemia: "Hypoglycémie",
+  Hypothyroidism: "Hypothyroïdie",
+  Impetigo: "Impétigo",
+  Jaundice: "Jaunisse",
+  Malaria: "Paludisme",
+  Migraine: "Migraine",
+  Osteoarthristis: "Arthrose",
+  "Paralysis (brain hemorrhage)": "Paralysie (AVC)",
+  "Peptic ulcer diseae": "Ulcère peptique",
+  Pneumonia: "Pneumonie",
+  Psoriasis: "Psoriasis",
+  Tuberculosis: "Tuberculose",
+  Typhoid: "Typhoïde",
+  "Urinary tract infection": "Infection urinaire",
+  "Varicose veins": "Varices",
+  "hepatitis A": "Hépatite A",
 };
 
 const RISK_CONFIG: Record<string, { color: string; bg: string; text: string }> =
@@ -14,44 +52,27 @@ const RISK_CONFIG: Record<string, { color: string; bg: string; text: string }> =
     Low: {
       color: "text-green-700",
       bg: "bg-green-100",
-      text: "Risque faible",
+      text: "Confiance faible",
     },
     Medium: {
       color: "text-amber-700",
       bg: "bg-amber-100",
-      text: "Risque modéré",
+      text: "Confiance modérée",
     },
-    High: { color: "text-red-700", bg: "bg-red-100", text: "Risque élevé" },
+    High: {
+      color: "text-blue-700",
+      bg: "bg-blue-100",
+      text: "Confiance élevée",
+    },
   };
 
 const BAR_COLORS = [
-  "bg-teal-500",
   "bg-blue-500",
+  "bg-indigo-500",
+  "bg-teal-500",
+  "bg-amber-500",
   "bg-rose-500",
 ];
-
-const RECOMMENDATIONS: Record<string, string[]> = {
-  Healthy: [
-    "Continuez à maintenir un mode de vie sain",
-    "Effectuez des bilans de santé réguliers",
-    "Maintenez une activité physique régulière",
-    "Conservez une alimentation équilibrée riche en fruits et légumes",
-  ],
-  "Single Condition": [
-    "Consultez votre médecin pour un diagnostic précis",
-    "Surveillez régulièrement vos indicateurs de santé (glycémie, tension, cholestérol)",
-    "Adoptez un régime alimentaire adapté à votre condition",
-    "Pratiquez une activité physique régulière adaptée",
-    "Arrêtez le tabac si applicable",
-  ],
-  "Multiple Conditions": [
-    "Un suivi médical régulier est fortement recommandé",
-    "Consultez plusieurs spécialistes si nécessaire",
-    "Suivez rigoureusement les traitements prescrits",
-    "Adoptez un mode de vie sain global (alimentation, exercice, sommeil)",
-    "Surveillez de près vos indicateurs de santé",
-  ],
-};
 
 interface Props {
   result: PredictionResult;
@@ -66,13 +87,13 @@ export default function ResultsDashboard({ result }: Props) {
 
   const maxProb = Math.max(...Object.values(result.probabilities));
 
-  const recommendations = RECOMMENDATIONS[result.prediction] || RECOMMENDATIONS.Healthy;
-
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Prediction header */}
       <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-8 text-center">
-        <p className="text-sm text-slate-500 mb-2">Résultat de l&apos;analyse</p>
+        <p className="text-sm text-slate-500 mb-2">
+          Maladie détectée
+        </p>
         <h2 className="text-2xl font-bold text-slate-800 mb-4">
           {DISEASE_LABELS[result.prediction] || result.prediction}
         </h2>
@@ -83,17 +104,17 @@ export default function ResultsDashboard({ result }: Props) {
         </span>
       </div>
 
-      {/* Probability chart */}
+      {/* Top 5 probability chart */}
       <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-8">
         <h3 className="text-lg font-semibold text-slate-800 mb-6">
-          Probabilités par catégorie
+          Top 5 des maladies les plus probables
         </h3>
         <div className="space-y-4">
-          {sortedProbs.map(([category, probability], index) => (
-            <div key={category}>
+          {sortedProbs.map(([disease, probability], index) => (
+            <div key={disease}>
               <div className="flex justify-between mb-1">
                 <span className="text-sm font-medium text-slate-700">
-                  {DISEASE_LABELS[category] || category}
+                  {DISEASE_LABELS[disease] || disease}
                 </span>
                 <span className="text-sm font-semibold text-slate-800">
                   {(probability * 100).toFixed(1)}%
@@ -112,22 +133,16 @@ export default function ResultsDashboard({ result }: Props) {
         </div>
       </div>
 
-      {/* Recommendations */}
+      {/* Disclaimer */}
       <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-8">
         <h3 className="text-lg font-semibold text-slate-800 mb-4">
-          Recommandations
+          Important
         </h3>
-        <ul className="space-y-3">
-          {recommendations.map((rec, i) => (
-            <li key={i} className="flex items-start gap-3">
-              <div className="w-2 h-2 rounded-full bg-teal-500 mt-2 shrink-0" />
-              <span className="text-sm text-slate-600">{rec}</span>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-6 text-xs text-slate-400 italic">
-          Ces recommandations sont fournies à titre indicatif uniquement. Veuillez
-          consulter un professionnel de santé pour un avis médical personnalisé.
+        <p className="text-sm text-slate-600">
+          Cette analyse est basée sur un modèle de machine learning entraîné sur
+          des données médicales. Elle ne remplace en aucun cas un diagnostic
+          médical professionnel. Veuillez consulter un médecin pour toute
+          préoccupation de santé.
         </p>
       </div>
 

@@ -7,9 +7,9 @@ const features = [
       "Modèles de machine learning entraînés sur des données médicales réelles pour une prédiction fiable.",
   },
   {
-    title: "3 Catégories",
+    title: "42 Maladies",
     description:
-      "Évaluation de l'état de santé : sain, condition chronique unique ou conditions multiples.",
+      "Détection de 42 maladies incluant diabète, hypertension, maladies cardiaques, infections et plus.",
   },
   {
     title: "Résultats Instantanés",
