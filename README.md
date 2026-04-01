@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend - Chronic Disease Prediction
 
-## Getting Started
+Interface web Next.js pour la prédiction de maladies chroniques.
 
-First, run the development server:
+## Prérequis
+
+- Node.js 20+
+
+## Installation
+
+```bash
+cd frontend
+npm install
+```
+
+## Configuration
+
+Créer un fichier `.env.local` à la racine du dossier `frontend/` :
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+Cette variable pointe vers l'API backend.
+
+## Lancement
+
+### Développement
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Le serveur démarre sur http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Lancement avec Docker
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+docker build -t chronic-disease-frontend .
+docker run -p 3000:3000 -e NEXT_PUBLIC_API_URL=http://localhost:8000 chronic-disease-frontend
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+frontend/
+├── src/
+│   ├── app/           # Pages (App Router)
+│   ├── components/    # Composants React
+│   ├── lib/           # Client API
+│   └── types/         # Types TypeScript
+├── public/            # Assets statiques
+├── package.json
+├── tsconfig.json
+└── Dockerfile
+```
 
-## Deploy on Vercel
+## Dépendances principales
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js 16
+- React 19
+- TypeScript 5
+- Tailwind CSS 4
