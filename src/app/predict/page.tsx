@@ -22,7 +22,7 @@ export default function PredictPage() {
       router.push("/predict/results");
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Une erreur est survenue"
+        err instanceof Error ? err.message : "Une erreur est survenue lors de l'analyse."
       );
     } finally {
       setIsLoading(false);
@@ -30,19 +30,24 @@ export default function PredictPage() {
   };
 
   return (
-    <div className="py-12 px-4">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-slate-900 mb-3">
-          Analyse de risque
+    <div className="medical-hero-bg min-h-screen py-20 px-4">
+      <div className="max-w-4xl mx-auto text-center mb-16 space-y-4">
+        <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
+          Analyse de <span className="text-primary">Santé Personnalisée</span>
         </h1>
-        <p className="text-slate-600">
-          Sélectionnez vos symptômes pour obtenir une prédiction
+        <p className="text-slate-500 text-lg max-w-2xl mx-auto">
+          Complétez le questionnaire ci-dessous. Notre IA analysera vos symptômes en temps réel pour évaluer les risques potentiels.
         </p>
       </div>
 
       {error && (
-        <div className="max-w-2xl mx-auto mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
-          {error}
+        <div className="max-w-2xl mx-auto mb-10 p-6 bg-rose-50 border border-rose-100 rounded-3xl flex items-center gap-4 animate-shake">
+          <div className="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+            ⚠
+          </div>
+          <p className="text-sm font-bold text-rose-700">
+            {error}
+          </p>
         </div>
       )}
 

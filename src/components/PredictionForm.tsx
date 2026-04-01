@@ -174,103 +174,122 @@ export default function PredictionForm({ onSubmit, isLoading }: Props) {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      {/* Selected symptoms */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold text-slate-800">
-            Symptômes sélectionnés
-          </h2>
-          <span className="text-sm text-slate-500">
-            {selected.size} sélectionné{selected.size > 1 ? "s" : ""}
-          </span>
+    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
+      {/* Search and Selection Status */}
+      <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-8">
+        <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between mb-8">
+          <div className="space-y-1">
+            <h2 className="text-2xl font-bold text-slate-800 tracking-tight">
+              Quels sont vos symptômes ?
+            </h2>
+            <p className="text-slate-500 text-sm italic">
+              Soyez le plus précis possible pour une meilleure analyse.
+            </p>
+          </div>
+          <div className="px-4 py-2 bg-primary/10 rounded-full">
+            <span className="text-primary font-bold text-sm">
+              {selected.size} {selected.size > 1 ? "symptômes sélectionnés" : "symptôme sélectionné"}
+            </span>
+          </div>
         </div>
-        {selected.size > 0 ? (
-          <div className="flex flex-wrap gap-2">
+
+        {/* Selected symptoms chips */}
+        {selected.size > 0 && (
+          <div className="flex flex-wrap gap-2 mb-8 p-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
             {Array.from(selected).map((s) => (
               <button
                 key={s}
                 onClick={() => toggle(s)}
-                className="px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 transition-all"
+                className="group flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-primary hover:text-primary transition-all shadow-sm"
               >
-                {SYMPTOM_LABELS[s] || s} ×
+                {SYMPTOM_LABELS[s] || s}
+                <span className="text-slate-400 group-hover:text-primary transition-colors">×</span>
               </button>
             ))}
           </div>
-        ) : (
-          <p className="text-sm text-slate-400 italic">
-            Sélectionnez vos symptômes ci-dessous
-          </p>
         )}
-      </div>
 
-      {/* Search */}
-      <div className="mb-4">
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Rechercher un symptôme..."
-          className="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-        />
-      </div>
-
-      {/* Symptoms grid */}
-      <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 mb-6 max-h-96 overflow-y-auto">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-          {filtered.map((symptom) => (
-            <button
-              key={symptom}
-              onClick={() => toggle(symptom)}
-              className={`text-left px-3 py-2 rounded-lg text-sm transition-all ${
-                selected.has(symptom)
-                  ? "bg-blue-50 text-blue-700 border border-blue-300 font-medium"
-                  : "bg-slate-50 text-slate-600 border border-transparent hover:bg-slate-100"
-              }`}
-            >
-              {SYMPTOM_LABELS[symptom] || symptom}
-            </button>
-          ))}
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+            <svg className="w-5 h-5 text-slate-400 group-focus-within:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Rechercher un symptôme (ex: fièvre, fatigue...)"
+            className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-slate-100 bg-slate-50 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all text-lg"
+          />
         </div>
-        {filtered.length === 0 && (
-          <p className="text-center text-sm text-slate-400 py-8">
-            Aucun symptôme trouvé
-          </p>
-        )}
       </div>
 
-      {/* Submit */}
-      <div className="text-center">
+      {/* Grid */}
+      <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+          {filtered.map((symptom) => {
+            const isSelected = selected.has(symptom);
+            return (
+              <button
+                key={symptom}
+                onClick={() => toggle(symptom)}
+                className={`group relative text-left px-4 py-3 rounded-xl text-sm transition-all duration-200 ${
+                  isSelected
+                    ? "bg-primary text-white shadow-lg shadow-primary/25 border-primary"
+                    : "bg-white text-slate-600 border border-slate-100 hover:border-primary/30 hover:bg-primary/5"
+                }`}
+              >
+                <span className="relative z-10 font-semibold tracking-tight">
+                  {SYMPTOM_LABELS[symptom] || symptom}
+                </span>
+                {isSelected && (
+                  <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                    <svg className="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                )}
+              </button>
+            );
+          })}
+          {filtered.length === 0 && (
+            <div className="col-span-full py-20 text-center space-y-4">
+              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
+                <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <p className="text-slate-500 font-medium italic">
+                Nous n'avons pas trouvé ce symptôme.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div className="pt-8 text-center sticky bottom-8 z-10 w-full">
         <button
           onClick={handleSubmit}
           disabled={isLoading || selected.size === 0}
-          className="px-8 py-3 rounded-xl text-sm font-medium text-white bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-sm"
+          className="group relative px-12 py-5 rounded-[2rem] text-lg font-extrabold text-white medical-gradient hover:scale-105 active:scale-95 disabled:grayscale-[0.5] disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 shadow-2xl shadow-primary/30"
         >
           {isLoading ? (
-            <span className="flex items-center gap-2">
-              <svg
-                className="animate-spin h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                />
+            <span className="flex items-center justify-center gap-3">
+              <svg className="animate-spin h-6 w-6 text-white" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
-              Analyse en cours...
+              Traitement...
             </span>
           ) : (
-            "Analyser les symptômes"
+            <span className="flex items-center justify-center gap-3">
+              {selected.size === 0 ? "Sélectionnez vos symptômes" : "Générer mon Analyse Médicale"}
+              <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+              </svg>
+            </span>
           )}
         </button>
       </div>
