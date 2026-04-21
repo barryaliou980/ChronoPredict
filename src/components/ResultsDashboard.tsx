@@ -2,6 +2,7 @@
 
 import { PredictionResult } from "@/types";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const DISEASE_LABELS: Record<string, string> = {
   "(vertigo) Paroymsal  Positional Vertigo": "Vertige positionnel",
@@ -48,6 +49,15 @@ const DISEASE_LABELS: Record<string, string> = {
   "Varicose veins": "Varices",
 };
 
+const DISEASE_TO_IMAGE_MODEL: Record<string, { model_type: string; label: string; instruction: string }> = {
+  "Diabetes": { model_type: "retinopathy", label: "Rétinopathie diabétique", instruction: "Téléchargez une photo du fond d'oeil (rétine)" },
+  "Pneumonia": { model_type: "chest_xray", label: "Radiographie thoracique", instruction: "Téléchargez une radiographie du thorax" },
+  "Psoriasis": { model_type: "skin_lesion", label: "Analyse cutanée", instruction: "Téléchargez une photo de la lésion cutanée" },
+  "Acne": { model_type: "skin_lesion", label: "Analyse cutanée", instruction: "Téléchargez une photo de la zone affectée" },
+  "Impetigo": { model_type: "skin_lesion", label: "Analyse cutanée", instruction: "Téléchargez une photo de la lésion" },
+  "Fungal infection": { model_type: "skin_lesion", label: "Analyse cutanée", instruction: "Téléchargez une photo de la zone infectée" },
+};
+
 const RISK_CONFIG: Record<string, { color: string; bg: string; text: string; icon: string }> = {
   Low: {
     color: "text-blue-700",
@@ -74,7 +84,18 @@ interface Props {
 }
 
 export default function ResultsDashboard({ result }: Props) {
+  const router = useRouter();
   const risk = RISK_CONFIG[result.risk_level] || RISK_CONFIG.Medium;
+  const imageModel = DISEASE_TO_IMAGE_MODEL[result.prediction];
+
+  const handleImageConfirmation = () => {
+    if (!imageModel) return;
+    sessionStorage.setItem("imageConfirmPrediction", result.prediction);
+    sessionStorage.setItem("imageConfirmModelType", imageModel.model_type);
+    sessionStorage.setItem("imageConfirmInstruction", imageModel.instruction);
+    sessionStorage.setItem("imageConfirmLabel", imageModel.label);
+    router.push("/predict/image");
+  };
 
   const sortedProbs = Object.entries(result.probabilities)
     .sort(([, a], [, b]) => b - a)
@@ -192,8 +213,19 @@ export default function ResultsDashboard({ result }: Props) {
           </p>
         </div>
         
-        <div className="flex gap-4">
-          <button 
+        <div className="flex gap-4 flex-wrap">
+          {imageModel && (
+            <button
+              onClick={handleImageConfirmation}
+              className="px-8 py-4 medical-gradient text-white font-bold rounded-2xl hover:scale-105 transition-all shadow-lg shadow-primary/30 flex items-center gap-3"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Confirmer par image
+            </button>
+          )}
+          <button
             onClick={() => window.print()}
             className="px-8 py-4 bg-white text-slate-700 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all shadow-sm"
           >

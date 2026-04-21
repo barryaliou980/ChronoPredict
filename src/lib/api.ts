@@ -1,4 +1,4 @@
-import { SymptomsInput, PredictionResult } from "@/types";
+import { SymptomsInput, PredictionResult, ImagePredictionResult } from "@/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -35,4 +35,33 @@ export async function healthCheck(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+export async function predictFromImage(
+  file: File,
+  modelType: string
+): Promise<ImagePredictionResult> {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("model_type", modelType);
+
+  const response = await fetch(`${API_URL}/api/predict/image`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.detail || "Erreur lors de l'analyse d'image");
+  }
+
+  return response.json();
+}
+
+export async function getDiseaseMapping(): Promise<Record<string, string>> {
+  const response = await fetch(`${API_URL}/api/predict/image/mapping`);
+  if (!response.ok) {
+    throw new Error("Impossible de charger le mapping des maladies");
+  }
+  return response.json();
 }
