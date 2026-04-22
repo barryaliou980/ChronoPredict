@@ -50,7 +50,6 @@ const DISEASE_LABELS: Record<string, string> = {
 };
 
 const DISEASE_TO_IMAGE_MODEL: Record<string, { model_type: string; label: string; instruction: string }> = {
-  "Diabetes": { model_type: "retinopathy", label: "Rétinopathie diabétique", instruction: "Téléchargez une photo du fond d'oeil (rétine)" },
   "Pneumonia": { model_type: "chest_xray", label: "Radiographie thoracique", instruction: "Téléchargez une radiographie du thorax" },
   "Psoriasis": { model_type: "skin_lesion", label: "Analyse cutanée", instruction: "Téléchargez une photo de la lésion cutanée" },
   "Acne": { model_type: "skin_lesion", label: "Analyse cutanée", instruction: "Téléchargez une photo de la zone affectée" },
