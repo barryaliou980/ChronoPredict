@@ -1,0 +1,45 @@
+name: Auto-generate Documentation
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  generate-docs:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout frontend
+        uses: actions/checkout@v4
+
+      - name: Clone backend repo
+        run: git clone https://github.com/barryaliou980/ChronoPredict-back.git backend-repo
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r agent-docs/requirements.txt
+
+      - name: Generate documentation
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CI: true
+        run: cd agent-docs && python generate.py
+
+      - name: Commit and push docs
+        run: |
+          git config user.name "Documentation Bot"
+          git config user.email "docs-bot@chronopredict.ai"
+          git add public/docs/
+          if git diff --staged --quiet; then
+            echo "No documentation changes"
+          else
+            git commit -m "docs: auto-update documentation"
+            git push
+          fi

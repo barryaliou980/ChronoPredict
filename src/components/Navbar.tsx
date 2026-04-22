@@ -40,6 +40,7 @@ export default function Navbar() {
                 { name: "Accueil", href: "/" },
                 { name: "Analyse", href: "/predict" },
                 { name: "A propos", href: "/about" },
+                { name: "Docs", href: "/docs" },
               ].map((link) => (
                 <Link
                   key={link.name}
