@@ -36,5 +36,4 @@ docs:
 
 output_dir: ../public/docs
 
-model: claude-sonnet-4-6
-max_tokens: 8000
+model: gemini-2.0-flash

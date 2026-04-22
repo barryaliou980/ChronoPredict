@@ -2,7 +2,7 @@
 """Agent IA de génération de documentation automatique.
 
 Génère 3 types de documentation (Process, System, User) pour chaque repo
-en utilisant l'API Claude avec des prompts système adaptés à chaque audience.
+en utilisant l'API Google Gemini avec des prompts système adaptés à chaque audience.
 
 Les fichiers .md sont générés dans public/docs/ pour être servis par Next.js.
 
@@ -20,8 +20,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-import anthropic
 import yaml
+from google import genai
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 
@@ -95,7 +95,7 @@ def build_user_message(repo_name, doc_type, files, git_info, project_name, proje
         "---", "",
         "# Contexte supplémentaire", "",
         "- **Qodo** est intégré sur les PR pour l'analyse de code et la génération de tests unitaires automatiques.",
-        "- **Un agent IA Claude** génère automatiquement la documentation à chaque PR mergée.",
+        "- **Un agent IA** génère automatiquement la documentation à chaque PR mergée.",
         "- Le frontend est déployé sur **Vercel**, le backend sur **Render**.",
         "- Projet éducatif : INF 716 — IA, Université de Sherbrooke, Hiver 2026.",
         "",
@@ -104,12 +104,13 @@ def build_user_message(repo_name, doc_type, files, git_info, project_name, proje
     return "\n".join(parts)
 
 
-def generate_doc(client, system_prompt, user_message, model, max_tokens):
-    message = client.messages.create(
-        model=model, max_tokens=max_tokens, system=system_prompt,
-        messages=[{"role": "user", "content": user_message}],
+def generate_doc(client, system_prompt, user_message, model):
+    """Appelle l'API Google Gemini pour générer la documentation."""
+    response = client.models.generate_content(
+        model=model,
+        contents=f"{system_prompt}\n\n---\n\n{user_message}",
     )
-    return message.content[0].text
+    return response.text
 
 
 def main():
@@ -119,15 +120,15 @@ def main():
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    api_key = "AIzaSyCSlp6o612VF7aAiYQOpDHBpwjttbyJc6k"
     if not api_key and not args.dry_run:
-        print("Erreur : ANTHROPIC_API_KEY non définie.")
-        print("  export ANTHROPIC_API_KEY='sk-ant-...'")
+        print("Erreur : GEMINI_API_KEY non définie.")
+        print("  export GEMINI_API_KEY='AIza...'")
+        print("  Clé gratuite sur : https://aistudio.google.com/apikey")
         sys.exit(1)
 
     config = load_config()
-    model = config.get("model", "claude-sonnet-4-6")
-    max_tokens = config.get("max_tokens", 8000)
+    model = config.get("model", "gemini-2.0-flash")
     output_base = (SCRIPT_DIR / config.get("output_dir", "../public/docs")).resolve()
 
     repos = config["repos"]
@@ -138,7 +139,7 @@ def main():
     if args.doc:
         docs = [d for d in docs if d["type"] == args.doc]
 
-    client = None if args.dry_run else anthropic.Anthropic(api_key=api_key)
+    client = None if args.dry_run else genai.Client(api_key=api_key)
     total = len(repos) * len(docs)
     current = 0
 
@@ -175,10 +176,10 @@ def main():
                 print(f"    Prompt : {len(system_prompt)} chars | Message : {len(user_message)} chars")
                 continue
 
-            print(f"    Appel API Claude ({model})...")
+            print(f"    Appel API Gemini ({model})...")
             try:
-                result = generate_doc(client, system_prompt, user_message, model, max_tokens)
-            except anthropic.APIError as e:
+                result = generate_doc(client, system_prompt, user_message, model)
+            except Exception as e:
                 print(f"    Erreur API : {e}")
                 continue
 
