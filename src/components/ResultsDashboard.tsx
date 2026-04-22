@@ -138,7 +138,7 @@ export default function ResultsDashboard({ result }: Props) {
                     {mainPrediction}
                   </h4>
                   <p className="text-primary font-bold text-sm">
-                    {(Object.entries(result.probabilities).find(([k]) => k === result.prediction)?.[1] || 0 * 100).toFixed(1)}% de probabilité
+                    le Plus probable
                   </p>
                 </div>
               </div>
