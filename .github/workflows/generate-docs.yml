@@ -36,7 +36,8 @@ jobs:
         run: |
           git config user.name "Documentation Bot"
           git config user.email "docs-bot@chronopredict.ai"
-          git add public/docs/
+          mkdir -p public/docs
+          git add public/docs/ || true
           if git diff --staged --quiet; then
             echo "No documentation changes"
           else
