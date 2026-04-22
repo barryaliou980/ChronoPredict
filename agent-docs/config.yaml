@@ -1,0 +1,40 @@
+project_name: ChronoPredict
+description: Application IA de prédiction de maladies chroniques
+
+repos:
+  frontend:
+    path: ..
+    include:
+      - "src/app/**/page.tsx"
+      - "src/app/**/layout.tsx"
+      - "src/components/**/*.tsx"
+      - "src/lib/**/*.ts"
+      - "src/types/**/*.ts"
+      - "package.json"
+      - "next.config.ts"
+
+  backend:
+    path: ../../backend
+    include:
+      - "app/**/*.py"
+      - "requirements.txt"
+      - "Dockerfile"
+
+# En GitHub Actions, le backend est cloné dans ./backend-repo
+backend_ci_path: ./backend-repo
+
+docs:
+  - type: process
+    prompt: prompts/process.md
+    output: PROCESS.md
+  - type: system
+    prompt: prompts/system.md
+    output: SYSTEM.md
+  - type: user
+    prompt: prompts/user.md
+    output: USER.md
+
+output_dir: ../public/docs
+
+model: claude-sonnet-4-6
+max_tokens: 8000
