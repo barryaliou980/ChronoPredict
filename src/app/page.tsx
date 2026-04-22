@@ -58,7 +58,7 @@ export default function Home() {
             </div>
             
             <h1 className="text-5xl md:text-7xl font-extrabold text-slate-900 tracking-tight mb-8 leading-[1.1]">
-              Anticipez votre santé avec <br />
+             TEST LE CICD <br />
               <span className="text-primary italic">l'Intelligence Artificielle</span>
             </h1>
             
