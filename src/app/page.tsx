@@ -90,24 +90,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trust Badges */}
-      <section className="py-12 border-y border-slate-100 bg-white/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-            <div className="flex items-center gap-2 font-bold text-slate-500">
-               <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/></svg>
-               ISO 27001
-            </div>
-            <div className="flex items-center gap-2 font-bold text-slate-500 uppercase tracking-tighter">
-              <span className="text-xl">RGPD</span> Compliant
-            </div>
-            <div className="flex items-center gap-2 font-bold text-slate-500">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2z"/></svg>
-              HDS Certified
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Features */}
       <section className="py-24 px-4 bg-white">
