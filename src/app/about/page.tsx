@@ -52,7 +52,7 @@ export default function AboutPage() {
   const stats = [
     { value: "42", label: "Maladies détectées" },
     { value: "132", label: "Symptômes analysés" },
-    { value: "100%", label: "Accuracy du modèle" },
+    { value: "77% - 97%", label: "Accuracy des modèle" },
     { value: "4 920", label: "Échantillons d'entraînement" },
   ];
 
